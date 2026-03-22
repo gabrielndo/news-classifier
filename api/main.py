@@ -10,7 +10,7 @@ nltk.download('stopwords')
 # Inicializa a aplicação
 app = FastAPI(
     title="News Classifier API",
-    description="API para classificação de categorias de notícias brasileiras",
+    description="API para classificação de categorias de notícias",
     version="1.0.0"
 )
 
