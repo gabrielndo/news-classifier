@@ -1,0 +1,19 @@
+# Ambiente virtual
+venv/
+
+# Modelos treinados
+models/
+
+# Dados
+data/
+
+# Python
+__pycache__/
+*.pyc
+*.pkl
+
+# VSCode
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
