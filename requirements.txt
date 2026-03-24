@@ -9,3 +9,7 @@ fastapi
 uvicorn
 joblib
 jupyter
+streamlit
+pytest
+httpx
+pydantic
