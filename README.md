@@ -179,7 +179,7 @@ Abra no navegador:
 ```
 http://localhost:8000/docs
 ```
-A documentação interativa já estará disponível para testar os endpoints! ✅
+A documentação interativa já estará disponível para testar os endpoints.
 
 
 ## Endpoints
