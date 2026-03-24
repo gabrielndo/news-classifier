@@ -80,14 +80,13 @@ O modelo foi embutido em uma API REST com FastAPI.
 
 ---
 
- Bibliotecas
-|-----------|-------------------|
+ Bibliotecas:
 | `scikit-learn` | TF-IDF e Regressão Logística |
 | `nltk` | Stopwords com suporte em português|
 | `matplotlib` / `seaborn` | Visualizações no EDA |
 | `wordcloud` | Nuvem de palavras |
 | `fastapi` | API sugerida para familiarização |
-| `uvicorn` | Servidor ASGI necessário rodar o FastAPI |
+| `uvicorn` | Servidor ASGI necessário para rodar o FastAPI |
 | `joblib` | Salvar e carregar o modelo treinado em arquivo `.pkl` |
 | `jupyter` | Notebook interativo para o EDA com gráficos inline |
 
