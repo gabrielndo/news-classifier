@@ -80,9 +80,7 @@ O modelo foi embutido em uma API REST com FastAPI.
 
 ---
 
-## Por que essas bibliotecas?
-
-| Bibliotecas utilizadas |
+ Bibliotecas
 |-----------|-------------------|
 | `scikit-learn` | TF-IDF e Regressão Logística |
 | `nltk` | Stopwords com suporte em português|
