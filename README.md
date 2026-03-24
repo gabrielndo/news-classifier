@@ -88,7 +88,7 @@ O modelo foi embutido em uma API REST com FastAPI.
 | `fastapi` | API sugerida para familiarização |
 | `uvicorn` | Servidor ASGI necessário para rodar o FastAPI |
 | `joblib` | Salvar e carregar o modelo treinado em arquivo `.pkl` |
-| `jupyter` | Notebook interativo para o EDA com gráficos inline |
+| `jupyter` | Notebook interativo para o EDA com gráficos online |
 
 ---
 
