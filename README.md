@@ -113,7 +113,7 @@ news-classifier/
 
 ---
 
-## Como rodar o projeto
+## Como acessar a API
 
 ### Pré-requisitos
 - Python 3.8+
@@ -141,62 +141,48 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Passo 4 — Baixe o dataset
-Acesse o [Kaggle](https://www.kaggle.com/datasets/marlesson/news-of-the-site-folhauol), baixe o dataset e coloque o arquivo `articles.csv` dentro da pasta `data/`.
-
-### Passo 5 — Treine o modelo
-```bash
-python src/train.py
-```
-Esse passo pode demorar alguns minutos. Ao final, os arquivos `model.pkl` e `vectorizer.pkl` serão salvos na pasta `models/`.
-
-### Passo 6 — Rode a API
+### Passo 4 — Rode a API
 ```bash
 uvicorn api.main:app --reload
 ```
 
-Acesse a documentação interativa em: http://127.0.0.1:8000/docs
+### Passo 5 — Acesse a API
+Abra no navegador:
+```
+http://localhost:8000/docs
+```
+A documentação interativa já estará disponível para testar os endpoints! 
 
 ---
 
 ## Como rodar com Docker
 
-O Docker garante que a API rode igual em qualquer ambiente — sem precisar instalar Python, bibliotecas ou configurar nada manualmente.
-
 ### Pré-requisitos
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando
 
-### Passo 1 — Treine o modelo localmente
-Antes de buildar o container, o modelo precisa estar treinado:
+### Passo 1 — Clone o repositório
 ```bash
-python src/train.py
+git clone https://github.com/gabrielndo/news-classifier.git
+cd news-classifier
 ```
 
 ### Passo 2 — Build da imagem
 ```bash
 docker build -t news-classifier .
 ```
-Esse comando lê o `Dockerfile` e cria uma imagem com tudo que a API precisa — Python, bibliotecas e o código.
 
 ### Passo 3 — Rode o container
 ```bash
 docker run -p 8000:8000 news-classifier
 ```
-O `-p 8000:8000` mapeia a porta do container para o seu computador.
 
 ### Passo 4 — Acesse a API
 Abra no navegador:
 ```
 http://localhost:8000/docs
 ```
+A documentação interativa já estará disponível para testar os endpoints! ✅
 
-### Parar o container
-```bash
-# Pressione Ctrl+C no terminal
-# Ou pelo Docker Desktop clique em Stop
-```
-
----
 
 ## Endpoints
 
