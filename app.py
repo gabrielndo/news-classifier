@@ -4,15 +4,12 @@ import re
 import nltk
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import requests
 import os
-from wordcloud import WordCloud
+import numpy as np
 from nltk.corpus import stopwords
 
 nltk.download('stopwords')
-
-API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 # Configuração da página
 st.set_page_config(
@@ -21,18 +18,15 @@ st.set_page_config(
     layout="wide"
 )
 
+# URL da API
+API_URL = os.getenv("API_URL", "http://localhost:8000")
+
 # Carrega o modelo e vectorizer
 @st.cache_resource
 def load_model():
     model = joblib.load('models/model.pkl')
     vectorizer = joblib.load('models/vectorizer.pkl')
     return model, vectorizer
-
-# Carrega o dataset
-@st.cache_data
-def load_data():
-    df = pd.read_csv('data/articles.csv')
-    return df
 
 # Pre-processamento
 def preprocess_text(text):
@@ -46,33 +40,34 @@ def preprocess_text(text):
 
 model, vectorizer = load_model()
 
-# Sidebar com navegação
+# Sidebar
 st.sidebar.image("https://img.icons8.com/emoji/96/newspaper-emoji.png", width=80)
 st.sidebar.title("News Classifier")
-st.sidebar.markdown("Classificador automático de notícias")
+st.sidebar.markdown("Classificador automático de notícias brasileiras")
 st.sidebar.markdown("---")
 
 pagina = st.sidebar.radio(
     "Navegação",
-    ["Sobre mim", "Início", "Análise dos Dados", "Sobre o Modelo","Classificador"]
+    ["Sobre mim", "Início", "Análise dos Dados", "Sobre o Modelo", "Classificador"]
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Desenvolvido por **Gabriel**")
+st.sidebar.markdown("Desenvolvido por **Gabriel Nantes**")
 st.sidebar.markdown("Teste Técnico — AeC Centro de Contatos")
+
+# ==================== SOBRE MIM ====================
 if pagina == "Sobre mim":
-    # Cabeçalho
     col1, col2 = st.columns([1, 2])
-    
+
     with col1:
         st.image("assets/foto.png", width=250)
-    
+
     with col2:
         st.title("Gabriel Nantes de Oliveira")
-        st.markdown("#### Case para Cientista de Dados Jr.")
+        st.markdown("#### Cientista de Dados Jr.")
         st.markdown("""
-        Apaixonado por cinema, futebol, saúde e tecnologia. 
-        Transformo dados em soluções práticas que geram impacto real — 
+        Apaixonado por cinema, futebol, saúde e tecnologia.
+        Transformo dados em soluções práticas que geram impacto real —
         do problema à produção.
         """)
         st.markdown("""
@@ -81,101 +76,56 @@ if pagina == "Sobre mim":
         """)
 
     st.markdown("---")
-
-    # Stacks
     st.markdown("### Stacks")
     col1, col2, col3, col4, col5 = st.columns(5)
-    with col1:
-        st.markdown("""
-        <div style='text-align:center; padding:15px; background:#1e1e2e; border-radius:10px'>
-            <h4>Python</h4>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown("""
-        <div style='text-align:center; padding:15px; background:#1e1e2e; border-radius:10px'>
-            <h4>SQL</h4>
-        </div>
-        """, unsafe_allow_html=True)
-    with col3:
-        st.markdown("""
-        <div style='text-align:center; padding:15px; background:#1e1e2e; border-radius:10px'>
-            <h4>Machine Learning</h4>
-        </div>
-        """, unsafe_allow_html=True)
-    with col4:
-        st.markdown("""
-        <div style='text-align:center; padding:15px; background:#1e1e2e; border-radius:10px'>
-            <h4>Power BI</h4>
-        </div>
-        """, unsafe_allow_html=True)
-    with col5:
-        st.markdown("""
-        <div style='text-align:center; padding:15px; background:#1e1e2e; border-radius:10px'>
-            <h4>Data Analysis</h4>
-        </div>
-        """, unsafe_allow_html=True)
+    for col, stack in zip([col1, col2, col3, col4, col5],
+                          ["Python", "SQL", "Machine Learning", "Power BI", "Data Analysis"]):
+        with col:
+            st.markdown(f"""
+            <div style='text-align:center; padding:15px; background:#1e1e2e; border-radius:10px'>
+                <h4>{stack}</h4>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown("---")
-
-    # Projetos
     st.markdown("### Projetos")
     col1, col2, col3 = st.columns(3)
 
-    with col1:
-        st.markdown("""
-        <div style='padding:20px; background:#1e1e2e; border-radius:10px; height:180px'>
-            <h4>Previsao de Falhas</h4>
-            <p>Deteccao de falhas em equipamentos por analise de vibração usando Machine Learning.</p>
-        </div>
-        """, unsafe_allow_html=True)
+    projetos = [
+        ("Previsao de Falhas", "Deteccao de falhas em equipamentos por analise de vibracao usando Machine Learning."),
+        ("Agente de Pendencias", "Agente inteligente para extracao e categorizacao automatica de falhas e pendencias."),
+        ("Monitor de Suplementos", "Aplicativo para lembrete e monitoramento de suplementacao diaria.")
+    ]
 
-    with col2:
-        st.markdown("""
-        <div style='padding:20px; background:#1e1e2e; border-radius:10px; height:180px'>
-            <h4>Agente de Pendencias</h4>
-            <p>Agente inteligente para extracao e categorizacao automatica de falhas e pendencias.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col3:
-        st.markdown("""
-        <div style='padding:20px; background:#1e1e2e; border-radius:10px; height:180px'>
-            <h4>Monitor de Suplementos</h4>
-            <p>Aplicativo para lembrete e monitoramento de suplementacao diaria.</p>
-        </div>
-        """, unsafe_allow_html=True)
+    for col, (titulo, descricao) in zip([col1, col2, col3], projetos):
+        with col:
+            st.markdown(f"""
+            <div style='padding:20px; background:#1e1e2e; border-radius:10px; height:180px'>
+                <h4>{titulo}</h4>
+                <p>{descricao}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown("---")
-
-    # Mapa de habilidades (radar)
     st.markdown("### Soft Skills")
 
-    import numpy as np
-    from matplotlib.patches import FancyArrowPatch
-    import matplotlib.pyplot as plt
-
-    skills = ['Inteligencia\nEmocional', 'Criatividade', 'Raciocinio\nLogico', 
+    skills = ['Inteligencia\nEmocional', 'Criatividade', 'Raciocinio\nLogico',
               'Empatia', 'Adaptabilidade']
     valores = [90, 85, 92, 88, 87]
-
-    # Fecha o radar
     valores += valores[:1]
     N = len(skills)
     angulos = [n / float(N) * 2 * 3.14159 for n in range(N)]
     angulos += angulos[:1]
 
-    fig, ax = plt.subplots(figsize=(2, 2), subplot_kw=dict(polar=True))
+    fig, ax = plt.subplots(figsize=(3, 3), subplot_kw=dict(polar=True))
     ax.set_facecolor('#0e1117')
     fig.patch.set_facecolor('#0e1117')
-
     ax.plot(angulos, valores, 'o-', linewidth=2, color='#4fa3e0')
     ax.fill(angulos, valores, alpha=0.25, color='#4fa3e0')
     ax.set_xticks(angulos[:-1])
     ax.set_xticklabels(skills, color='white', size=6)
-    ax.set_xticklabels(skills, color='white', size=6)
-for label in ax.get_xticklabels():
-    label.set_rotation(0)
+    for label in ax.get_xticklabels():
+        label.set_rotation(0)
     ax.set_ylim(0, 100)
     ax.set_yticks([])
     ax.grid(color='grey', alpha=0.3)
@@ -185,10 +135,10 @@ for label in ax.get_xticklabels():
     with col2:
         st.pyplot(fig)
 
-# Página Início
-if pagina == "Início":
+# ==================== INÍCIO ====================
+elif pagina == "Início":
     st.title("News Classifier")
-    st.markdown("### Classificador automático de notícias brasileiras")
+    st.markdown("Classificador automático de notícias brasileiras usando NLP e Machine Learning.")
     st.markdown("---")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -209,102 +159,79 @@ if pagina == "Início":
         st.markdown("""
         ### Entrada
         O sistema recebe o **título** de uma notícia em português e passa por 3 etapas:
-        
+
         1. **Pre-processamento** — limpa o texto removendo stopwords e pontuação
         2. **Vetorização** — transforma o texto em números com TF-IDF
         3. **Classificação** — a Regressão Logística prevê a categoria
         """)
-
     with col2:
         st.markdown("""
         ### Saída
         O sistema retorna:
-        
+
         - **Categoria** — qual das 18 categorias a notícia pertence
         - **Confiança** — o nível de certeza do modelo na predição
-        
+
         Tudo isso em **milissegundos**!
         """)
 
-# Página Análise dos Dados
+    st.markdown("---")
+    st.markdown("## Etapas")
+    st.markdown("**EDA → Pré-processamento → TF-IDF → Regressão Logística → FastAPI → Docker**")
+
+# ==================== ANÁLISE DOS DADOS ====================
 elif pagina == "Análise dos Dados":
     st.title("Análise dos Dados")
     st.markdown("Insights extraídos durante a análise exploratória do dataset.")
     st.markdown("---")
 
-    try:
-        df = load_data()
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Total de notícias", "167.053")
+    with col2:
+        st.metric("Categorias únicas", "18")
+    with col3:
+        st.metric("Período", "2017 - 2018")
 
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Total de notícias", f"{len(df):,}")
-        with col2:
-            st.metric("Categorias únicas", df['category'].nunique())
-        with col3:
-            st.metric("Período", f"{df['date'].min()[:4]} - {df['date'].max()[:4]}")
+    st.markdown("---")
+    st.markdown("### Distribuição de Categorias")
+    st.markdown("Desbalanceamento severo — `poder` com 22k notícias vs categorias com menos de 200.")
+    st.image("assets/distribuicao_categorias.png", use_column_width=True)
 
-        st.markdown("---")
-        st.markdown("### Distribuição de Categorias")
-        fig, ax = plt.subplots(figsize=(12, 4))
-        df['category'].value_counts().plot(kind='bar', ax=ax, color='steelblue')
-        ax.set_xlabel("Categoria")
-        ax.set_ylabel("Quantidade")
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
-        plt.tight_layout()
-        st.pyplot(fig)
+    st.markdown("---")
+    st.markdown("### Palavras mais frequentes nos títulos")
+    st.markdown("Forte presença de termos políticos — coerente com o período de coleta (2017-2018).")
+    st.image("assets/wordcloud.png", use_column_width=True)
 
-        st.markdown("---")
-        st.markdown("### Palavras mais frequentes nos títulos")
-        stop_words = set(stopwords.words('portuguese'))
-        texto = ' '.join(df['title'].dropna().values)
-        wc = WordCloud(
-            width=800,
-            height=400,
-            stopwords=stop_words,
-            background_color='white'
-        ).generate(texto)
+    st.markdown("---")
+    st.markdown("### Distribuição do tamanho dos títulos")
+    st.markdown("Títulos curtos e padronizados com média de 10 palavras — ótimo para o TF-IDF.")
+    st.image("assets/distribuicao_titulos.png", use_column_width=True)
 
-        fig, ax = plt.subplots(figsize=(14, 6))
-        ax.imshow(wc, interpolation='bilinear')
-        ax.axis('off')
-        st.pyplot(fig)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Media de palavras", "10")
+    with col2:
+        st.metric("Minimo", "1")
+    with col3:
+        st.metric("Maximo", "23")
 
-        st.markdown("---")
-        st.markdown("### Distribuição do tamanho dos títulos")
-        df['title_len'] = df['title'].dropna().apply(lambda x: len(x.split()))
-        fig, ax = plt.subplots(figsize=(10, 4))
-        sns.histplot(df['title_len'], bins=30, ax=ax, color='steelblue')
-        ax.set_xlabel("Número de palavras")
-        ax.set_ylabel("Frequência")
-        plt.tight_layout()
-        st.pyplot(fig)
-
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Media de palavras", f"{df['title_len'].mean():.0f}")
-        with col2:
-            st.metric("Minimo", f"{df['title_len'].min():.0f}")
-        with col3:
-            st.metric("Maximo", f"{df['title_len'].max():.0f}")
-
-    except:
-        st.warning("Dataset não encontrado! Coloque o arquivo `articles.csv` na pasta `data/` para visualizar a análise.")
-
-# Página Sobre o Modelo
+# ==================== SOBRE O MODELO ====================
 elif pagina == "Sobre o Modelo":
     st.title("Sobre o Modelo")
+    st.markdown("Regressão Logística com TF-IDF — simples, rápida e eficiente para classificação de texto.")
     st.markdown("---")
 
-    st.markdown("### Metodologia")
+    st.markdown("### Como o TF-IDF funciona?")
     st.markdown("""
-    A escolha da **Regressão Logística** com **TF-IDF** foi intencional — é uma combinação 
-    simples, rápida e muito eficiente para classificação de texto. O foco do projeto foi 
-    entregar algo funcional e bem estruturado do início ao fim.
+    - **TF** — frequência da palavra no título
+    - **IDF** — raridade da palavra no dataset inteiro
+    - Palavras como "gol" têm peso alto em esporte, baixo em política
+    - Palavras como "decreto" têm peso alto em poder, baixo em esporte
     """)
 
     st.markdown("---")
     st.markdown("### Métricas")
-
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Acurácia", "74%")
@@ -317,6 +244,7 @@ elif pagina == "Sobre o Modelo":
 
     st.markdown("---")
     st.markdown("### Desempenho por Categoria")
+    st.markdown("Verde = bom (>0.75) | Laranja = regular (>0.50) | Vermelho = fraco (<0.50)")
 
     dados = {
         "Categoria": ["esporte", "paineldoleitor", "poder", "mundo", "ilustrada",
@@ -330,9 +258,8 @@ elif pagina == "Sobre o Modelo":
     }
 
     df_metricas = pd.DataFrame(dados).sort_values("F1-Score", ascending=False)
-
     fig, ax = plt.subplots(figsize=(12, 5))
-    colors = ['green' if f >= 0.75 else 'orange' if f >= 0.50 else 'red' 
+    colors = ['green' if f >= 0.75 else 'orange' if f >= 0.50 else 'red'
               for f in df_metricas["F1-Score"]]
     ax.barh(df_metricas["Categoria"], df_metricas["F1-Score"], color=colors)
     ax.set_xlabel("F1-Score")
@@ -344,7 +271,6 @@ elif pagina == "Sobre o Modelo":
 
     st.markdown("---")
     st.markdown("### Tecnologias utilizadas")
-
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
@@ -360,13 +286,13 @@ elif pagina == "Sobre o Modelo":
         - **Uvicorn** — servidor ASGI
         - **Docker** — containerização
         """)
-        
+
+# ==================== CLASSIFICADOR ====================
 elif pagina == "Classificador":
     st.title("Classificador de Noticias")
-    st.markdown("Digite o título de uma notícia e descubra a categoria!")
+    st.markdown("Digite o título de uma notícia e descubra a categoria em tempo real!")
     st.markdown("---")
 
-    # Verifica se a API está no ar
     try:
         health = requests.get(f"{API_URL}/health")
         if health.status_code == 200:
@@ -404,7 +330,6 @@ elif pagina == "Classificador":
                     with col2:
                         st.info(f"### Confiança: `{confianca:.1%}`")
 
-                    # Top 5 categorias
                     st.markdown("### Top 5 categorias mais prováveis")
                     model_local, vectorizer_local = load_model()
                     titulo_clean = preprocess_text(titulo)
