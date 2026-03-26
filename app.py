@@ -5,6 +5,7 @@ import nltk
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import requests
 from wordcloud import WordCloud
 from nltk.corpus import stopwords
 
@@ -178,8 +179,6 @@ if pagina == "Sobre mim":
     with col2:
         st.pyplot(fig)
 
-
-    st.pyplot(fig)
 # Página Início
 if pagina == "Início":
     st.title("News Classifier")
@@ -359,11 +358,20 @@ elif pagina == "Sobre o Modelo":
         - **Docker** — containerização
         """)
         
-# Página Classificador
 elif pagina == "Classificador":
     st.title("Classificador de Noticias")
     st.markdown("Digite o título de uma notícia e descubra a categoria!")
     st.markdown("---")
+
+    # Verifica se a API está no ar
+    try:
+        health = requests.get("http://localhost:8000/health")
+        if health.status_code == 200:
+            st.success("API conectada e rodando!")
+        else:
+            st.error("API fora do ar!")
+    except:
+        st.error("API nao encontrada! Rode o servidor com: uvicorn api.main:app --reload")
 
     titulo = st.text_input(
         "Título da notícia",
@@ -377,23 +385,34 @@ elif pagina == "Classificador":
             st.warning("O título deve ter pelo menos 3 palavras!")
         else:
             with st.spinner("Classificando..."):
-                titulo_clean = preprocess_text(titulo)
-                titulo_vec = vectorizer.transform([titulo_clean])
-                categoria = model.predict(titulo_vec)[0]
-                probabilidades = model.predict_proba(titulo_vec)[0]
-                confianca = round(float(max(probabilidades)), 4)
+                try:
+                    response = requests.post(
+                        "http://localhost:8000/predict",
+                        json={"title": titulo}
+                    )
+                    resultado = response.json()
+                    categoria = resultado["category"]
+                    confianca = resultado["confidence"]
 
-            st.markdown("---")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.success(f"### Categoria: `{categoria}`")
-            with col2:
-                st.info(f"### Confiança: `{confianca:.1%}`")
+                    st.markdown("---")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.success(f"### Categoria: `{categoria}`")
+                    with col2:
+                        st.info(f"### Confiança: `{confianca:.1%}`")
 
-            st.markdown("### Top 5 categorias mais prováveis")
-            categorias = model.classes_
-            top5_idx = probabilidades.argsort()[-5:][::-1]
-            top5 = [(categorias[i], probabilidades[i]) for i in top5_idx]
+                    # Top 5 categorias
+                    st.markdown("### Top 5 categorias mais prováveis")
+                    model_local, vectorizer_local = load_model()
+                    titulo_clean = preprocess_text(titulo)
+                    titulo_vec = vectorizer_local.transform([titulo_clean])
+                    probabilidades = model_local.predict_proba(titulo_vec)[0]
+                    categorias = model_local.classes_
+                    top5_idx = probabilidades.argsort()[-5:][::-1]
+                    top5 = [(categorias[i], probabilidades[i]) for i in top5_idx]
 
-            for cat, prob in top5:
-                st.progress(float(prob), text=f"{cat}: {prob:.1%}")
+                    for cat, prob in top5:
+                        st.progress(float(prob), text=f"{cat}: {prob:.1%}")
+
+                except Exception as e:
+                    st.error(f"Erro ao classificar: {e}")
