@@ -22,3 +22,6 @@ services:
       - api
     environment:
       - API_URL=http://api:8000
+    volumes:
+      - ./app.py:/app/app.py
+      - ./assets:/app/assets         

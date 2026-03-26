@@ -190,7 +190,7 @@ elif pagina == "Análise dos Dados":
     with col2:
         st.metric("Categorias únicas", "18")
     with col3:
-        st.metric("Período", "2017 - 2018")
+        st.metric("Período", "2015 - 2017")
 
     st.markdown("---")
     st.markdown("### Distribuição de Categorias")
