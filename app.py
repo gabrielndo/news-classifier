@@ -6,10 +6,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import requests
+import os
 from wordcloud import WordCloud
 from nltk.corpus import stopwords
 
 nltk.download('stopwords')
+
+API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 # Configuração da página
 st.set_page_config(
@@ -365,7 +368,7 @@ elif pagina == "Classificador":
 
     # Verifica se a API está no ar
     try:
-        health = requests.get("http://localhost:8000/health")
+        health = requests.get(f"{API_URL}/health")
         if health.status_code == 200:
             st.success("API conectada e rodando!")
         else:
@@ -387,7 +390,7 @@ elif pagina == "Classificador":
             with st.spinner("Classificando..."):
                 try:
                     response = requests.post(
-                        "http://localhost:8000/predict",
+                        f"{API_URL}/predict",
                         json={"title": titulo}
                     )
                     resultado = response.json()
