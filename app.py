@@ -69,7 +69,7 @@ if pagina == "Sobre mim":
     
     with col2:
         st.title("Gabriel Nantes de Oliveira")
-        st.markdown("#### Cientista de Dados Jr.")
+        st.markdown("#### Case para Cientista de Dados Jr.")
         st.markdown("""
         Apaixonado por cinema, futebol, saúde e tecnologia. 
         Transformo dados em soluções práticas que geram impacto real — 
@@ -149,7 +149,7 @@ if pagina == "Sobre mim":
     st.markdown("---")
 
     # Mapa de habilidades (radar)
-    st.markdown("### Mapa de Soft Skills")
+    st.markdown("### Soft Skills")
 
     import numpy as np
     from matplotlib.patches import FancyArrowPatch
@@ -172,7 +172,10 @@ if pagina == "Sobre mim":
     ax.plot(angulos, valores, 'o-', linewidth=2, color='#4fa3e0')
     ax.fill(angulos, valores, alpha=0.25, color='#4fa3e0')
     ax.set_xticks(angulos[:-1])
-    ax.set_xticklabels(skills, color='white', size=11)
+    ax.set_xticklabels(skills, color='white', size=6)
+    ax.set_xticklabels(skills, color='white', size=6)
+for label in ax.get_xticklabels():
+    label.set_rotation(0)
     ax.set_ylim(0, 100)
     ax.set_yticks([])
     ax.grid(color='grey', alpha=0.3)
@@ -222,9 +225,6 @@ if pagina == "Início":
         
         Tudo isso em **milissegundos**!
         """)
-
-    st.markdown("---")
-    st.info("Use o menu lateral para navegar entre as seções")
 
 # Página Análise dos Dados
 elif pagina == "Análise dos Dados":
