@@ -219,7 +219,6 @@ elif pagina == "Análise dos Dados":
 elif pagina == "Sobre o Modelo":
     st.title("Sobre o Modelo")
     st.markdown("Regressão Logística com TF-IDF")
-    st.markdown("---")
 
     st.markdown("---")
     st.markdown("### Métricas")
