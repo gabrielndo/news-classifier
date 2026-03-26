@@ -64,7 +64,7 @@ if pagina == "Sobre mim":
 
     with col2:
         st.title("Gabriel Nantes de Oliveira")
-        st.markdown("#### Cientista de Dados Jr.")
+        st.markdown("#### Case para Cientista de Dados Jr.")
         st.markdown("""
         Apaixonado por cinema, futebol, saúde e tecnologia.
         Transformo dados em soluções práticas que geram impacto real —
@@ -79,7 +79,7 @@ if pagina == "Sobre mim":
     st.markdown("### Stacks")
     col1, col2, col3, col4, col5 = st.columns(5)
     for col, stack in zip([col1, col2, col3, col4, col5],
-                          ["Python", "SQL", "Machine Learning", "Power BI", "Data Analysis"]):
+                          ["Python", "Azure SQL & Big Query", "Machine Learning", "BI", "Data Analysis"]):
         with col:
             st.markdown(f"""
             <div style='text-align:center; padding:15px; background:#1e1e2e; border-radius:10px'>
@@ -92,7 +92,7 @@ if pagina == "Sobre mim":
     col1, col2, col3 = st.columns(3)
 
     projetos = [
-        ("Previsao de Falhas", "Deteccao de falhas em equipamentos por analise de vibracao usando Machine Learning."),
+        ("Previsao de Falhas", "Detecção de possíveis falhas em equipamentos por analise de vibracao usando Machine Learning."),
         ("Agente de Pendencias", "Agente inteligente para extracao e categorizacao automatica de falhas e pendencias."),
         ("Monitor de Suplementos", "Aplicativo para lembrete e monitoramento de suplementacao diaria.")
     ]
@@ -170,9 +170,8 @@ elif pagina == "Início":
         O sistema retorna:
 
         - **Categoria** — qual das 18 categorias a notícia pertence
-        - **Confiança** — o nível de certeza do modelo na predição
+        - **Acurácia** — o nível de certeza do modelo na predição
 
-        Tudo isso em **milissegundos**!
         """)
 
     st.markdown("---")
@@ -196,17 +195,17 @@ elif pagina == "Análise dos Dados":
     st.markdown("---")
     st.markdown("### Distribuição de Categorias")
     st.markdown("Desbalanceamento severo — `poder` com 22k notícias vs categorias com menos de 200.")
-    st.image("assets/distribuicao_categorias.png", use_column_width=True)
+    st.image("assets/distribuicao_categorias.png", use_container_width=True)
 
     st.markdown("---")
     st.markdown("### Palavras mais frequentes nos títulos")
-    st.markdown("Forte presença de termos políticos — coerente com o período de coleta (2017-2018).")
-    st.image("assets/wordcloud.png", use_column_width=True)
+    st.markdown("Forte presença de termos políticos — coerente com o período de coleta.")
+    st.image("assets/wordcloud.png", use_container_width=True)
 
     st.markdown("---")
     st.markdown("### Distribuição do tamanho dos títulos")
-    st.markdown("Títulos curtos e padronizados com média de 10 palavras — ótimo para o TF-IDF.")
-    st.image("assets/distribuicao_titulos.png", use_column_width=True)
+    st.markdown("Títulos curtos e padronizados com média de 10 palavras.")
+    st.image("assets/distribuicao_titulos.png", use_container_width=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -219,16 +218,8 @@ elif pagina == "Análise dos Dados":
 # ==================== SOBRE O MODELO ====================
 elif pagina == "Sobre o Modelo":
     st.title("Sobre o Modelo")
-    st.markdown("Regressão Logística com TF-IDF — simples, rápida e eficiente para classificação de texto.")
+    st.markdown("Regressão Logística com TF-IDF")
     st.markdown("---")
-
-    st.markdown("### Como o TF-IDF funciona?")
-    st.markdown("""
-    - **TF** — frequência da palavra no título
-    - **IDF** — raridade da palavra no dataset inteiro
-    - Palavras como "gol" têm peso alto em esporte, baixo em política
-    - Palavras como "decreto" têm peso alto em poder, baixo em esporte
-    """)
 
     st.markdown("---")
     st.markdown("### Métricas")
