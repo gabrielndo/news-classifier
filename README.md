@@ -1,5 +1,4 @@
-# Case técnico AeC
-Teste técnico - Classificador automático de notícias AeC Centro de Contatos
+Classificador automático de notícias 
 
 ---
 
@@ -7,7 +6,7 @@ Teste técnico - Classificador automático de notícias AeC Centro de Contatos
 
 ### 1. Análise Exploratória (EDA)
 
-Diante da proposta apresentada, em criar um classificador automático de notícias, foi realizada a Análise exploratória do dataset para entender e filtrar o que iria agregar ao modelo. Essa etapa guiou todas as decisões seguintes.
+Criar um classificador automático de notícias, foi realizada a Análise exploratória do dataset para entender e filtrar o que iria agregar ao modelo. Essa etapa guiou todas as decisões seguintes.
 
 **Insights encontrados:**
 
